@@ -1,22 +1,20 @@
 'use client'
 
-import { useEffect } from "react"
-import FHIR from 'fhirclient'
+import getPatientData from "@/app/lib/fhir";
+import { useEffect, useRef } from "react"
+
 
 export default function CallbackPage() {
+    const isReadyCalled = useRef(false)
+
     useEffect(() => {
-        FHIR.oauth2.ready().then(client => {
-            console.log("Token response:", client.state.tokenResponse);
-            console.log("Patient ID:", client.patient.id);
+        // This stops the second 'double-fire' in Next.js Dev mode
+        if (isReadyCalled.current) return; 
+        isReadyCalled.current = true;
 
-            client.patient.read().then(data => {
-                console.log("Patient Data:", data)
-            })
-
-            client.request(`MedicationRequest?patient=${client.patient.id}`)
-  .then(data => console.log(data))
-  .catch(err => console.error("Search failed:", err));
-        });
+        getPatientData().then(data => {
+            console.log(data)
+        })
     }, []);
 
     return <div>Completing authorization...</div>
