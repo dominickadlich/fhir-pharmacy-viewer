@@ -1,5 +1,5 @@
 import FHIR from "fhirclient";
-import { parseAllergy, parseMedications, parseObservation } from "./parsers";
+import { parseAllergy, ParsedAllergy, ParsedMedication, parseMedications, parseObservation } from "./parsers";
 import Client from "fhirclient/lib/Client";
 
 export default async function getPatientData() {
@@ -14,12 +14,12 @@ export default async function getPatientData() {
 
     return {
         patient,
-        medication: medBundle.entry
+        medications: medBundle.entry
             ?.map(e => parseMedications(e.resource as fhir4.MedicationRequest))
-            .filter(Boolean) ?? [],
+            .filter((m): m is ParsedMedication => m !== null) ?? [],
         allergies: allergyBundle.entry
             ?.map(e => parseAllergy(e.resource as fhir4.AllergyIntolerance))
-            .filter(Boolean) ?? [],
+            .filter((m): m is ParsedAllergy => m !== null) ?? [],
         observations: obsBundle.entry
             ?.map(e => parseObservation(e.resource as fhir4.Observation))
             .filter(Boolean)

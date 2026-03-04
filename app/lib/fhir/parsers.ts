@@ -1,3 +1,12 @@
+export interface ParsedPatient {
+    id: string;
+    name: string;
+    initials: string;
+    dob: string;
+    gender: string;
+    mrn: string;
+}
+
 export interface ParsedMedication {
     id: string;
     name: string;
@@ -8,7 +17,7 @@ export interface ParsedMedication {
     refillsAllowed: number;
 }
 
-interface ParsedAllergy {
+export interface ParsedAllergy {
     id: string;
     code: string;
     criticality: string;
@@ -23,6 +32,29 @@ interface ParsedObservation {
     unit: string;
     referenceRange: string;
     effectiveDateTime: string;
+}
+
+export function parsePatient(patient: fhir4.Patient): ParsedPatient | null {
+    if (!patient || patient.resourceType !== 'Patient') return null;
+
+    const nameObj = patient.name?.[0];
+    const given = nameObj?.given?.[0] ?? "";
+    const family = nameObj?.family?.[0] ?? "";
+    const name = nameObj?.text ?? `${given} ${family}`.trim();
+    const initials = `${given[0] ??""}${family[0] ?? ""}`.toUpperCase()
+
+    const mrn = patient.identifier?.find(id =>
+        id.type?.coding?.some(c => c.code === "MR")
+    )?.value ?? ""
+
+    return {
+        id: patient.id ?? "",
+        name,
+        initials,
+        dob: patient.birthDate ?? "",
+        gender: patient.gender ?? "",
+        mrn
+    }
 }
 
 export function parseObservation(entry: fhir4.Observation): ParsedObservation | null {
