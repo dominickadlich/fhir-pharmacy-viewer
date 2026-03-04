@@ -14,5 +14,8 @@ export default function LaunchPage() {
        })
     }, []);
 
+    console.log("clientId:", process.env.NEXT_PUBLIC_NON_PRODUCTION_CLIENT_ID)
+    console.log("redirectUri:", process.env.NEXT_PUBLIC_REDIRECT_URI)
+    
     return <div>Launching...</div>
 }
