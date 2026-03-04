@@ -6,8 +6,6 @@ import FHIR from "fhirclient";
 export default function LaunchPage() {
 
     useEffect(() => {
-        sessionStorage.clear();
-        
         FHIR.oauth2.authorize({
          clientId: process.env.NEXT_PUBLIC_NON_PRODUCTION_CLIENT_ID!,
          redirectUri: process.env.NEXT_PUBLIC_REDIRECT_URI!,
