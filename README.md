@@ -1,36 +1,59 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# FHIR Pharmacy Viewer
 
-## Getting Started
+A pharmacy-focused patient viewer built on SMART on FHIR and Epic's R4 sandbox.
+Demonstrates how modern healthcare interoperability standards can support
+clinical medication review workflows in a web application.
 
-First, run the development server:
+## What It Does
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Authenticates via SMART on FHIR OAuth 2.0, retrieves patient clinical data from
+Epic's sandbox, and surfaces pharmacy-relevant resources — medications, allergies,
+and lab results — in a clinician-facing UI. Includes drug-allergy interaction
+flagging with a roadmap toward RxNorm class-level lookups and LLM-assisted
+renal dosing review.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Tech Stack
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Next.js · TypeScript · Tailwind CSS · fhirclient.js · Vercel
+Epic FHIR R4 · SMART on FHIR v2 · PKCE OAuth 2.0
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Known Limitations
 
-## Learn More
+Drug-allergy cross-checking currently uses case-insensitive string matching on
+medication and allergen display names. A production implementation requires
+RxNorm class-level relationship lookups via NLM's RxNav API — substring matching
+will not catch cross-reactive allergen classes (e.g., penicillin → amoxicillin).
 
-To learn more about Next.js, take a look at the following resources:
+## Launch the Application
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Navigate to [fhir-pharmacy-viewer.vercel.app](https://fhir-pharmacy-viewer.vercel.app)
+and click the **Pharmacy Viewer** button to initiate the Epic OAuth 2.0 login flow.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Sign-In Credentials
 
-## Deploy on Vercel
+Clinician-level privileges are required to access medications, allergies, and lab
+results. Use the following sandbox credentials:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+| Field    | Value         |
+|----------|---------------|
+| Username | `FHIRTWO`     |
+| Password | `EpicFhir11!` |
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+> These are Epic-provided sandbox credentials for the open development environment.
+> Do not use real patient credentials.
+
+## Selecting a Patient
+
+1. After login, confirm your location — the pre-populated value is fine.
+2. Select a patient from the list and click **Accept**.
+3. When prompted, allow the application access to patient data.
+
+## Pharmacy Profile View
+
+You'll be redirected to the **Pharmacy Profile**, which displays:
+
+- **Patient header** — demographics including name, date of birth, and MRN
+- **Drug-allergy flag** — banner alert when a medication name matches a documented allergen
+- **Medication list** — active medications with sig, indication, and authorized refills
+- **Allergy list** — documented allergens with criticality and reaction
+- **Lab results** — most recent laboratory observations, where available

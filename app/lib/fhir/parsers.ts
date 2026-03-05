@@ -25,7 +25,7 @@ export interface ParsedAllergy {
     recordedDate: string;
 }
 
-interface ParsedObservation {
+export interface ParsedObservation {
     id: string;
     code: string;
     value: number | null;

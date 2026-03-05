@@ -8,6 +8,7 @@ import MedicationList from "@/app/components/MedicationList"
 import AllergyList from "@/app/components/AllergyList"
 import { findDrugAllergyConflicts } from "@/app/lib/utils"
 import DrugAllergyFlag from "@/app/components/DrugAllergyFlag"
+import ObservationList from "@/app/components/ObservationList"
 
 export default function CallbackPage() {
     const isReadyCalled = useRef(false)
@@ -38,6 +39,7 @@ export default function CallbackPage() {
             ))}
             <MedicationList medications={patientData.medications}/>
             <AllergyList allergies={patientData.allergies} />
+            <ObservationList observations={patientData.observations} />
         </>
     )
 }
