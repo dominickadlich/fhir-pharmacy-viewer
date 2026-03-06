@@ -1,4 +1,6 @@
-import { ParsedAllergy, ParsedMedication } from "./fhir/parsers"
+import { RENAL_DOSE_ANTIBIOTICS } from "./constants/renalDoseAntibiotics";
+import { RENAL_LAB_LOINC } from "./constants/renalLabs";
+import { ParsedAllergy, ParsedMedication, ParsedObservation } from "./fhir/parsers"
 
 export function formatDate(date: string): string {
     const [getDate, time] = date.split('T')
@@ -24,4 +26,30 @@ export function findDrugAllergyConflicts(
     });
 
     return conflicts;
+}
+
+export function filterRenalDoseAntibiotics(
+    medications: ParsedMedication[] | undefined,
+) {
+    const renallyDosedAbx = Object.values(RENAL_DOSE_ANTIBIOTICS)
+
+    return medications?.filter(med =>
+        // some() returns true if any element in the array satisfies the condition. 
+        renallyDosedAbx.some(abx =>
+            med.name.toLowerCase().includes(abx.toLowerCase())
+        )
+    ).map(med => med.name) ?? []
+}
+
+
+export function filterRenalLabs(
+    labs: ParsedObservation[] | undefined,
+) {
+    const renalLabs = Object.keys(RENAL_LAB_LOINC)
+
+    return labs?.filter(lab => 
+        renalLabs.some(rl => 
+            lab.code.toLocaleLowerCase().includes(rl.toLocaleLowerCase())
+        )
+    ).map(lab => lab.code) ?? []
 }

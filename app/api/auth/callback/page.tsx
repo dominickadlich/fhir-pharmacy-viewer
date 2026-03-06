@@ -21,6 +21,7 @@ export default function CallbackPage() {
 
         getPatientData().then(data => {
             setPatientData(data)
+            console.log(data)
             setConflicts(findDrugAllergyConflicts(data.medications, data.allergies))
         })
     }, []);
