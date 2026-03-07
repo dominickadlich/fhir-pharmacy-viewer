@@ -30,7 +30,7 @@ export function findDrugAllergyConflicts(
 
 export function filterRenalDoseAntibiotics(
     medications: ParsedMedication[] | undefined,
-) {
+): string[] {
     const renallyDosedAbx = Object.values(RENAL_DOSE_ANTIBIOTICS)
 
     return medications?.filter(med =>
@@ -44,12 +44,12 @@ export function filterRenalDoseAntibiotics(
 
 export function filterRenalLabs(
     labs: ParsedObservation[] | undefined,
-) {
+): ParsedObservation[] {
     const renalLabs = Object.keys(RENAL_LAB_LOINC)
 
     return labs?.filter(lab => 
         renalLabs.some(rl => 
-            lab.code.toLocaleLowerCase().includes(rl.toLocaleLowerCase())
+            lab.code === rl
         )
-    ).map(lab => lab.code) ?? []
+    ) ?? []
 }

@@ -28,6 +28,7 @@ export interface ParsedAllergy {
 export interface ParsedObservation {
     id: string;
     code: string;
+    text: string;
     value: number | null;
     unit: string;
     referenceRange: string;
@@ -62,7 +63,8 @@ export function parseObservation(entry: fhir4.Observation): ParsedObservation | 
 
     return {
         id: entry.id ?? "",
-        code: entry.code?.text ?? entry.code?.coding?.[0]?.display ?? "Unknown Observation",
+        code: entry.code?.coding?.[0]?.code ?? "",
+        text: entry.code?.text ?? "Unknown Observation",
         value: entry.valueQuantity?.value ?? null,
         unit: entry.valueQuantity?.unit ?? entry.valueQuantity?.code ?? "",
         referenceRange: entry.referenceRange?.[0]?.text ?? `${entry.referenceRange?.[0]?.low?.value ?? ""} - ${entry.referenceRange?.[0]?.high?.value ?? ""}`,

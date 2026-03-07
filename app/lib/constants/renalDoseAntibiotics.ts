@@ -9,5 +9,6 @@ export const RENAL_DOSE_ANTIBIOTICS: Record<string, string> = {
     "2180": "Cefazolin",
     "20481": "Cefepime",
     "22299": "Daptomycin",
-    "4450": "Fluconazole"
+    "4450": "Fluconazole",
+    "1112": "Vancomycin",
 }

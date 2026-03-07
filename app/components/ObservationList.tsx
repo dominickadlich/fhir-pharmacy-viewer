@@ -40,7 +40,7 @@ export default function ObservationList({ observations }: ObservationListProps) 
                         {observations?.map((lab) => (
                         <tr key={lab.id}>
                             <td className="py-4 pr-3 pl-4 text-sm font-medium whitespace-nowrap text-white sm:pl-0">
-                            {lab.code}
+                            {lab.text}
                             </td>
                             <td className="px-3 py-4 text-sm whitespace-nowrap text-gray-400">{lab.value}</td>
                             <td className="px-3 py-4 text-sm text-gray-400">{lab.unit}</td>
