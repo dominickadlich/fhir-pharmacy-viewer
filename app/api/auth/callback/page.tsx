@@ -17,38 +17,40 @@ export default function CallbackPage() {
     const [conflicts, setConflicts] = useState<{drug: string, allergy: string}[]>([])
     const [renalPanel, setRenalPanel] = useState<ParsedObservation[]>([]);
     const [renallyDosedAbx, setRenallyDosedAbx] = useState<string[]>([]);
+    const [renalRecommendaiton, setRenalRecommendation] = useState<string>('')
 
     useEffect(() => {
         if (isReadyCalled.current) return;
         isReadyCalled.current = true;
 
-        getPatientData().then(data => {
+        getPatientData().then(async (data) => {
             setPatientData(data)
-            console.log(data)
             setConflicts(findDrugAllergyConflicts(data.medications, data.allergies))
+            setRenallyDosedAbx(["Vancomycin", "Daptomycin"])
+
+            const mockLabs = [
+                { id: "mock-scr-001", code: "2160-0", text: "Serum Creatinine", value: 2.1, unit: "mg/dL", referenceRange: "0.6 - 1.2 mg/dL", effectiveDateTime: "2026-03-06T08:00:00Z" },
+                { id: "mock-egfr-001", code: "33914-3", text: "eGFR", value: 32, unit: "mL/min/1.73m2", referenceRange: ">60 mL/min/1.73m2", effectiveDateTime: "2026-03-06T08:00:00Z" }
+            ]
+            setRenalPanel(mockLabs)
+
+            console.log(`Patient Data:${data.patient}`)
+
+            const res = await fetch('/api/renal-review', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    patient: parsePatient(data.patient),
+                    renalDrugs: ["Vancomycin", "Daptomycin"],
+                    renalLabs: mockLabs,
+                }),
+            });
+            const { recommendation } = await res.json();
+            setRenalRecommendation(recommendation)
+
+            console.log(data)
             // setRenallyDosedAbx(filterRenalDoseAntibiotics(data.medications))
             // setRenalPanel(filterRenalLabs(data.observations))
-            setRenallyDosedAbx(["Vancomycin", "Daptomycin"])
-            setRenalPanel([
-                {
-                    id: "mock-scr-001",
-                    code: "2160-0",
-                    text: "Serum Creatinine",
-                    value: 2.1,
-                    unit: "mg/dL",
-                    referenceRange: "0.6 - 1.2 mg/dL",
-                    effectiveDateTime: "2026-03-06T08:00:00Z"
-                },
-                {
-                    id: "mock-egfr-001",
-                    code: "33914-3",
-                    text: "eGFR",
-                    value: 32,
-                    unit: "mL/min/1.73m2",
-                    referenceRange: ">60 mL/min/1.73m2",
-                    effectiveDateTime: "2026-03-06T08:00:00Z"
-                }
-            ])
         })
     }, []);
 
@@ -67,7 +69,7 @@ export default function CallbackPage() {
             <MedicationList medications={patientData.medications}/>
             <AllergyList allergies={patientData.allergies} />
             <ObservationList observations={patientData.observations} />
-            <RenalDosingPanel drugs={renallyDosedAbx} observations={renalPanel}/>
+            <RenalDosingPanel drugs={renallyDosedAbx} observations={renalPanel} recommendation={renalRecommendaiton} />
         </>
     )
 }

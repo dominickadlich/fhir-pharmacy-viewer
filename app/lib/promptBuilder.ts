@@ -33,8 +33,17 @@ export function buildRenalDosingPrompt(
     ].filter(Boolean).join(", ");
 
     return `You are a clinical pharmacist working at an academic medical center reviewing a patient's antibiotic regimen for renal dose adjustments.
-    Patient: ${patient.name}, MRN: ${patient.mrn} is a ${age} year old ${patient.gender} with ${renalContext}. They are currently receiving ${renalDrugs.join(', ')}, which require renal dose adjustment per institutional protocol.
-    Please review the following institutional renal dosing policy and provide dose change recommendations: ${institutionalPolicy}
-    Write your recommendation as a provider message requesting dose change approval.
-    `.trim()
+
+INSTITUTIONAL RENAL DOSING POLICY:
+${institutionalPolicy}
+
+PATIENT:
+${patient.name}, MRN: ${patient.mrn} is a ${age} year old ${patient.gender} with ${renalContext}. They are currently receiving ${renalDrugs.join(', ')}, which require renal dose adjustment per institutional protocol.
+
+TASK:
+Review the patient's current antibiotic regimen against the institutional policy above and identify any doses that require adjustment based on the patient's renal function.
+
+OUTPUT FORMAT:
+Write your recommendations as a provider message requesting dose change approval. Be specific: include the drug name, current dose, recommended dose, and the CrCl threshold that applies. Do not use markdown formatting. Write in plain prose only.`
+.trim();
 }

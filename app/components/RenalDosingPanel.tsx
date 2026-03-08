@@ -1,11 +1,13 @@
 import { ParsedObservation } from "../lib/fhir/parsers";
 
-export default async function RenalDosingPanel({
+export default function RenalDosingPanel({
     drugs,
     observations,
+    recommendation,
 }: {
     drugs: string[];
     observations: ParsedObservation[];
+    recommendation: string;
 }) {
   return (
     <div className="divide-y divide-white/10 overflow-hidden rounded-lg bg-gray-800/50 outline -outline-offset-1 outline-white/10">
@@ -25,6 +27,11 @@ export default async function RenalDosingPanel({
             ))}
         </div>
     </div>
+        <div className="px-4 py-5 sm:p-6">
+            <p className="text-sm text-white">
+                {recommendation}
+            </p>
+        </div>
     </div>
   )
 }

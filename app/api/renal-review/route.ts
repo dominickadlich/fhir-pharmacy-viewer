@@ -3,7 +3,7 @@ import { ParsedObservation, ParsedPatient } from "@/app/lib/fhir/parsers";
 import { buildRenalDosingPrompt } from "@/app/lib/promptBuilder";
 import { NextResponse } from "next/server";
 
-export default async function POST(request: Request) {
+export async function POST(request: Request) {
     const { patient, renalDrugs, renalLabs }: {
         patient: ParsedPatient,
         renalDrugs: string[],
@@ -15,7 +15,7 @@ export default async function POST(request: Request) {
     const anthropic = new Anthropic();
 
     const msg = await anthropic.messages.create({
-        model: "claude-opus-4-6",
+        model: "claude-sonnet-4-6",
         max_tokens: 1000,
         messages: [{ role: "user", content: prompt }],
   });
