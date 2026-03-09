@@ -26,7 +26,9 @@ export default function CallbackPage() {
         getPatientData().then(async (data) => {
             setPatientData(data)
             setConflicts(findDrugAllergyConflicts(data.medications, data.allergies))
-            setRenallyDosedAbx(["Vancomycin", "Daptomycin"])
+            setRenallyDosedAbx(filterRenalDoseAntibiotics(data.medications))
+            // setRenalPanel(filterRenalLabs(data.observations))
+
 
             const mockLabs = [
                 { id: "mock-scr-001", code: "2160-0", text: "Serum Creatinine", value: 2.1, unit: "mg/dL", referenceRange: "0.6 - 1.2 mg/dL", effectiveDateTime: "2026-03-06T08:00:00Z" },
@@ -34,14 +36,13 @@ export default function CallbackPage() {
             ]
             setRenalPanel(mockLabs)
 
-            console.log(`Patient Data:${data.patient}`)
 
             const res = await fetch('/api/renal-review', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ 
                     patient: parsePatient(data.patient),
-                    renalDrugs: ["Vancomycin", "Daptomycin"],
+                    renalDrugs: renallyDosedAbx,
                     renalLabs: mockLabs,
                 }),
             });
@@ -49,8 +50,6 @@ export default function CallbackPage() {
             setRenalRecommendation(recommendation)
 
             console.log(data)
-            // setRenallyDosedAbx(filterRenalDoseAntibiotics(data.medications))
-            // setRenalPanel(filterRenalLabs(data.observations))
         })
     }, []);
 
