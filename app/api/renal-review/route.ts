@@ -17,6 +17,7 @@ export async function POST(request: Request) {
     const msg = await anthropic.messages.create({
         model: "claude-sonnet-4-6",
         max_tokens: 1000,
+        cache_control: { type: "ephemeral"},
         messages: [{ role: "user", content: prompt }],
   });
   const recommendation = msg.content[0].type === "text" ? msg.content[0].text : '';
