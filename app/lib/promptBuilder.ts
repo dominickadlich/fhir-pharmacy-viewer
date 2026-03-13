@@ -10,7 +10,7 @@ function calculateAge(dob: string) {
     return age;
 }
 
-function estimateCrCl(age: number, weight: number = 70, scr: number, gender: string) {
+export function estimateCrCl(age: number, weight: number = 70, scr: number, gender: string) {
     const crcl = ((140 - age) * weight) / (72 * scr);
     return gender === 'female' ? Math.round(crcl * 0.85) : Math.round(crcl)
 }
