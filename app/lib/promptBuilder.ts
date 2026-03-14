@@ -1,7 +1,7 @@
 import { NEBRASKA_MEDICINE_RENAL_POLICY } from "./constants/renalPolicy";
 import { ParsedPatient, ParsedObservation } from "./fhir/parsers";
 
-function calculateAge(dob: string) {
+export function calculateAge(dob: string) {
     const birth = new Date(dob);
     const today = new Date();
 

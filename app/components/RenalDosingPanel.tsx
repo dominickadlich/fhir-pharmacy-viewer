@@ -1,11 +1,11 @@
-import { ParsedObservation } from "../lib/fhir/parsers";
+import { ParsedMedication, ParsedObservation } from "../lib/fhir/parsers";
 
 export default function RenalDosingPanel({
     drugs,
     observations,
     recommendation,
 }: {
-    drugs: string[];
+    drugs: ParsedMedication[];
     observations: ParsedObservation[];
     recommendation: string;
 }) {
@@ -17,7 +17,7 @@ export default function RenalDosingPanel({
       <div className="grid grid-cols-2">
         <div className="px-4 py-5 sm:p-6">
             {drugs.map((drug, i) => (
-                <p key={i} className="text-sm text-white">{drug}</p>
+                <p key={i} className="text-sm text-white">{drug.name}</p>
             ))}</div>
         <div className="px-4 py-5 sm:p-6">
             {observations.map((obs) => (

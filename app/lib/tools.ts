@@ -1,4 +1,6 @@
-export const tools = [
+import Anthropic from "@anthropic-ai/sdk";
+
+export const tools: Anthropic.Tool[] = [
     {
         name: "get_active_antibiotics",
         description: "Returns the patient's active antibiotic orders that require renal dose adjustment",

@@ -16,7 +16,7 @@ export default function CallbackPage() {
     const [patientData, setPatientData] = useState<Awaited<ReturnType<typeof getPatientData>> | null>(null)
     const [conflicts, setConflicts] = useState<{drug: string, allergy: string}[]>([])
     const [renalPanel, setRenalPanel] = useState<ParsedObservation[]>([]);
-    const [renallyDosedAbx, setRenallyDosedAbx] = useState<string[]>([]);
+    const [renallyDosedAbx, setRenallyDosedAbx] = useState<ParsedMedication[]>([]);
     const [renalRecommendaiton, setRenalRecommendation] = useState<string>('')
 
     useEffect(() => {
@@ -26,24 +26,30 @@ export default function CallbackPage() {
         getPatientData().then(async (data) => {
             setPatientData(data)
             setConflicts(findDrugAllergyConflicts(data.medications, data.allergies))
-            setRenallyDosedAbx(filterRenalDoseAntibiotics(data.medications))
+            // setRenallyDosedAbx(filterRenalDoseAntibiotics(data.medications))
             // setRenalPanel(filterRenalLabs(data.observations))
 
 
             const mockLabs = [
-                { id: "mock-scr-001", code: "2160-0", text: "Serum Creatinine", value: 2.1, unit: "mg/dL", referenceRange: "0.6 - 1.2 mg/dL", effectiveDateTime: "2026-03-06T08:00:00Z" },
+                { id: "mock-scr-001", code: "2160-0", text: "Serum Creatinine", value: 3.1, unit: "mg/dL", referenceRange: "0.6 - 1.2 mg/dL", effectiveDateTime: "2026-03-06T08:00:00Z" },
                 { id: "mock-egfr-001", code: "33914-3", text: "eGFR", value: 32, unit: "mL/min/1.73m2", referenceRange: ">60 mL/min/1.73m2", effectiveDateTime: "2026-03-06T08:00:00Z" }
             ]
-            setRenalPanel(mockLabs)
 
+            const mockDrugs = [
+                {id: "mock-drug-01", name: "Acyclovir", status: "Active", authoredOn: "02/02/2026", sig: "IV 700mg Q8H" , indication: "virus", refillsAllowed: 0 },
+                {id: "mock-drug-02", name: "Amoxicillin", status: "Active", authoredOn: "02/02/2026", sig: "875mg PO Q12H" , indication: "bacteria", refillsAllowed: 0 },
+            ]
+
+            setRenalPanel(mockLabs)
+            setRenallyDosedAbx(mockDrugs)
 
             const res = await fetch('/api/renal-review', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ 
                     patient: parsePatient(data.patient),
-                    renalDrugs: renallyDosedAbx,
-                    renalLabs: mockLabs,
+                    medications: mockDrugs,
+                    observations: mockLabs,
                 }),
             });
             const { recommendation } = await res.json();
