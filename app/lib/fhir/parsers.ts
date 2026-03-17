@@ -98,7 +98,7 @@ export function parseMedications(entry: fhir4.MedicationRequest): ParsedMedicati
         status: entry.status ?? "",
         authoredOn: entry.authoredOn ?? "",
         sig: entry.dosageInstruction?.[0]?.text ?? "",
-        indication: entry.reasonCode?.[0].text ?? "",
+        indication: entry.reasonCode?.[0]?.text ?? "",
         refillsAllowed: entry.dispenseRequest?.numberOfRepeatsAllowed ?? 0
     }
 }

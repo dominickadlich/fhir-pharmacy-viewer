@@ -67,8 +67,19 @@ function executeToolCall(
     }
 }
 
-const SYSTEM_PROMPT = `You are a clinical pharmacist reviewing antibiotic regimens for renal dose adjustments. Use the available tools to gather patient data, then provide a specific dose adjustment recommendation. Be concise and clinical. Do not use markdown formatting. Write in plain prose only.`;
-
+const SYSTEM_PROMPT: Anthropic.TextBlockParam[] = [
+    {
+        type: "text",
+        text: `You are a clinical pharmacist reviewing antibiotic regimens for renal dose adjustments. 
+                Use the available tools to gather patient data, then provide a specific dose adjustment recommendation. Be concise and clinical. 
+                Do not use markdown formatting. Write in plain prose only.`
+    },
+    {
+        type: "text",
+        text: `INSTITUTIONAL RENAL DOSING POLICY:\n${NEBRASKA_MEDICINE_RENAL_POLICY}`,
+        cache_control: { type: "ephemeral" }
+    }
+]
 export async function POST(request: Request) {
     const { patient, medications, observations } = await request.json();
 
@@ -125,5 +136,6 @@ export async function POST(request: Request) {
             messages.push({ role: "user", content: toolResults})
         }
         console.log(JSON.stringify(messages, null, 2))
+        console.log(response.usage)
     }
 };

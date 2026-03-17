@@ -7,7 +7,7 @@ export default function LaunchPage() {
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
-        sessionStorage.clear();
+            sessionStorage.clear();
         }
         
         FHIR.oauth2.authorize({
