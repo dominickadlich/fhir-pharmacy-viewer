@@ -136,6 +136,7 @@ export async function POST(request: Request) {
             messages.push({ role: "user", content: toolResults})
         }
         console.log(JSON.stringify(messages, null, 2))
+        console.log("Policy length (chars):", NEBRASKA_MEDICINE_RENAL_POLICY.length)
         console.log(response.usage)
     }
 };

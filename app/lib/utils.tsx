@@ -34,7 +34,7 @@ export function filterRenalDoseAntibiotics(
     const renallyDosedAbx = Object.values(RENAL_DOSE_ANTIBIOTICS)
 
     return medications?.filter(med =>
-        med.status === "active" &&
+        med.status.toLowerCase() === "active" &&
         // some() returns true if any element in the array satisfies the condition. 
         renallyDosedAbx.some(abx =>
             med.name.toLowerCase().includes(abx.toLowerCase())

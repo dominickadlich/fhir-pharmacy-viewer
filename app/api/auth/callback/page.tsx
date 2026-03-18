@@ -36,38 +36,38 @@ export default function CallbackPage() {
             ]
 
             const mockDrugs = [
-                {id: "mock-drug-01", name: "Acyclovir", status: "Active", authoredOn: "02/02/2026", sig: "IV 700mg Q8H" , indication: "virus", refillsAllowed: 0 },
-                {id: "mock-drug-02", name: "Amoxicillin", status: "Active", authoredOn: "02/02/2026", sig: "875mg PO Q12H" , indication: "bacteria", refillsAllowed: 0 },
+                {id: "mock-drug-01", name: "Acyclovir", status: "active", authoredOn: "02/02/2026", sig: "IV 700mg Q8H" , indication: "virus", refillsAllowed: 0 },
+                {id: "mock-drug-02", name: "Amoxicillin", status: "active", authoredOn: "02/02/2026", sig: "875mg PO Q12H" , indication: "bacteria", refillsAllowed: 0 },
             ]
 
             setRenalPanel(mockLabs)
             setRenallyDosedAbx(mockDrugs)
 
-            // const res = await fetch('/api/renal-review', {
-            //     method: 'POST',
-            //     headers: { 'Content-Type': 'application/json' },
-            //     body: JSON.stringify({ 
-            //         patient: parsePatient(data.patient),
-            //         medications: mockDrugs,
-            //         observations: mockLabs,
-            //     }),
-            // });
-            // const { recommendation } = await res.json();
-            // setRenalRecommendation(recommendation)
+            const res = await fetch('/api/renal-review', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    patient: parsePatient(data.patient),
+                    medications: mockDrugs,
+                    observations: mockLabs,
+                }),
+            });
+            const { recommendation } = await res.json();
+            setRenalRecommendation(recommendation)
 
             console.log(data)
-            const patientId = "87a339d0-8cae-418e-89c7-8651e6aab3c6";
-            const base = "https://r4.smarthealthit.org";
+            // const patientId = "87a339d0-8cae-418e-89c7-8651e6aab3c6";
+            // const base = "https://r4.smarthealthit.org";
     
-            const [observations, medications, conditions] = await Promise.all([
-                fetch(`${base}/Observation?patient=${patientId}&category=laboratory&_count=50`).then(r => r.json()),
-                fetch(`${base}/MedicationRequest?patient=${patientId}&_count=50`).then(r => r.json()),
-                fetch(`${base}/Condition?patient=${patientId}&_count=50`).then(r => r.json()),
-            ]);
+            // const [observations, medications, conditions] = await Promise.all([
+            //     fetch(`${base}/Observation?patient=${patientId}&category=laboratory&_count=50`).then(r => r.json()),
+            //     fetch(`${base}/MedicationRequest?patient=${patientId}&_count=50`).then(r => r.json()),
+            //     fetch(`${base}/Condition?patient=${patientId}&_count=50`).then(r => r.json()),
+            // ]);
     
-            console.log("OBSERVATIONS:", JSON.stringify(observations, null, 2));
-            console.log("MEDICATIONS:", JSON.stringify(medications, null, 2));
-            console.log("CONDITIONS:", JSON.stringify(conditions, null, 2));
+            // console.log("OBSERVATIONS:", JSON.stringify(observations, null, 2));
+            // console.log("MEDICATIONS:", JSON.stringify(medications, null, 2));
+            // console.log("CONDITIONS:", JSON.stringify(conditions, null, 2));
         })
     }, []);
 
