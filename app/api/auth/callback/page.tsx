@@ -10,6 +10,9 @@ import { filterRenalDoseAntibiotics, filterRenalLabs, findDrugAllergyConflicts }
 import DrugAllergyFlag from "@/app/components/DrugAllergyFlag"
 import ObservationList from "@/app/components/ObservationList"
 import RenalDosingPanel from "@/app/components/RenalDosingPanel"
+import MedicationCard from "@/app/components/medicationCard"
+import AllergyCard from "@/app/components/AllergyCard"
+import LabCard from "@/app/components/LabCard"
 
 export default function CallbackPage() {
     const isReadyCalled = useRef(false)
@@ -43,17 +46,17 @@ export default function CallbackPage() {
             setRenalPanel(mockLabs)
             setRenallyDosedAbx(mockDrugs)
 
-            const res = await fetch('/api/renal-review', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    patient: parsePatient(data.patient),
-                    medications: mockDrugs,
-                    observations: mockLabs,
-                }),
-            });
-            const { recommendation } = await res.json();
-            setRenalRecommendation(recommendation)
+            // const res = await fetch('/api/renal-review', {
+            //     method: 'POST',
+            //     headers: { 'Content-Type': 'application/json' },
+            //     body: JSON.stringify({ 
+            //         patient: parsePatient(data.patient),
+            //         medications: mockDrugs,
+            //         observations: mockLabs,
+            //     }),
+            // });
+            // const { recommendation } = await res.json();
+            // setRenalRecommendation(recommendation)
 
             console.log(data)
             // const patientId = "87a339d0-8cae-418e-89c7-8651e6aab3c6";
@@ -83,9 +86,9 @@ export default function CallbackPage() {
             {conflicts.map((c, i) => (
                 <DrugAllergyFlag key={i} drug={c.drug} allergy={c.allergy} />
             ))}
-            <MedicationList medications={patientData.medications}/>
-            <AllergyList allergies={patientData.allergies} />
-            <ObservationList observations={patientData.observations} />
+            <MedicationCard medications={patientData.medications}/>
+            <AllergyCard allergies={patientData.allergies} />
+            <LabCard observations={patientData.observations} />
             <RenalDosingPanel drugs={renallyDosedAbx} observations={renalPanel} recommendation={renalRecommendaiton} />
         </>
     )

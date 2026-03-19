@@ -32,40 +32,43 @@ export default function PatientHeader({ patient, allergyCount, medicationCount }
     const age = patient.dob ? calculateAge(patient.dob) : null;
 
     return (
-        <div className="w-full bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white">
+        <div className="grid justify-items-center w-full text-white">
 
             {/* Cover banner */}
-            <div className="h-28 w-full bg-gradient-to-r from-cyan-600 via-blue-600 to-indigo-700 relative">
+            {/* <div className="h-28 w-full bg-gradient-to-r from-cyan-600 via-blue-600 to-indigo-700 relative">
                 <div className="absolute inset-0 opacity-20"
                     style={{ backgroundImage: "repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,.05) 10px, rgba(255,255,255,.05) 20px)" }}
                 />
-            </div>
+            </div> */}
 
             {/* Profile section */}
-            <div className="px-6 pb-5">
-                <div className="flex items-end justify-between -mt-10 mb-4">
+            <div className="">
+                <div className="justify-between">
 
                     {/* Avatar */}
-                    <div className="relative">
-                        <div className="w-20 h-20 rounded-full bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center text-2xl font-bold text-white ring-4 ring-slate-900 shadow-xl select-none">
+                    <div className="grid justify-items-center p-2">
+                        <div className="w-20 h-20 rounded-full bg-gradient-to-br from-violet-400 to-indigo-600 flex items-center justify-center text-2xl font-bold text-white ring-4 ring-slate-900 shadow-xl select-none">
                             {patient.initials}
                         </div>
                         <span className="absolute bottom-1 right-1 w-3.5 h-3.5 bg-emerald-400 rounded-full ring-2 ring-slate-900" title="Active patient" />
                     </div>
 
+                    <h1 className="grid justify-items-center text-xl font-bold tracking-tight text-white p-2">{patient.name}</h1>
+
                     {/* MRN badge */}
-                    <div className="mb-1 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs font-mono text-slate-400 tracking-wider">
+                    <div className="grid justify-items-center mb-1 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs font-mono text-slate-400 tracking-wider">
                         MRN {patient.mrn || patient.id.slice(0, 8).toUpperCase()}
                     </div>
                 </div>
 
                 {/* Name + demographics */}
-                <div className="space-y-1 mb-5">
-                    <h1 className="text-xl font-bold tracking-tight text-white">{patient.name}</h1>
+                <div className="grid justify-items-center space-y-1 mt-2">
                     <p className="text-sm text-slate-400">
+                        {patient.dob && <span> DOB: {formatDOB(patient.dob)}</span>}
+                        </p>
+                        <p className="text-sm text-slate-400">
                         {patient.gender?.charAt(0).toUpperCase() + patient.gender?.slice(1)}
                         {age !== null && <span> &middot; {age} yrs</span>}
-                        {patient.dob && <span> &middot; DOB {formatDOB(patient.dob)}</span>}
                     </p>
                 </div>
             </div>
