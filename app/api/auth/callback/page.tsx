@@ -33,13 +33,13 @@ export default function CallbackPage() {
             // setRenalPanel(filterRenalLabs(data.observations))
 
 
-            const mockLabs = [
-                { id: "mock-scr-001", code: "2160-0", text: "Serum Creatinine", value: 3.1, unit: "mg/dL", referenceRange: "0.6 - 1.2 mg/dL", effectiveDateTime: "2026-03-06T08:00:00Z" },
-                { id: "mock-egfr-001", code: "33914-3", text: "eGFR", value: 32, unit: "mL/min/1.73m2", referenceRange: ">60 mL/min/1.73m2", effectiveDateTime: "2026-03-06T08:00:00Z" }
+            const mockLabs: ParsedObservation[] = [
+                { id: "mock-scr-001", code: "2160-0", text: "Serum Creatinine", value: 3.1, unit: "mg/dL", referenceRangeLow: 0.6, referenceRangeHigh: 1.2, effectiveDateTime: "2026-03-06T08:00:00Z", interpretation: "High" },
+                { id: "mock-egfr-001", code: "33914-3", text: "eGFR", value: 32, unit: "mL/min/1.73m2", referenceRangeLow: 60, referenceRangeHigh: 120, effectiveDateTime: "2026-03-06T08:00:00Z", interpretation: "Low" }
             ]
 
-            const mockDrugs = [
-                {id: "mock-drug-01", name: "Acyclovir", status: "active", authoredOn: "02/02/2026", sig: "IV 700mg Q8H" , indication: "virus", refillsAllowed: 0 },
+            const mockDrugs: ParsedMedication[] = [
+                {id: "mock-drug-01", name: "Acyclovir", status: 'active', authoredOn: "02/02/2026", sig: "IV 700mg Q8H" , indication: "virus", refillsAllowed: 0 },
                 {id: "mock-drug-02", name: "Amoxicillin", status: "active", authoredOn: "02/02/2026", sig: "875mg PO Q12H" , indication: "bacteria", refillsAllowed: 0 },
             ]
 

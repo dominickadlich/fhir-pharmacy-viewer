@@ -10,7 +10,7 @@ export interface ParsedPatient {
 export interface ParsedMedication {
     id: string;
     name: string;
-    status: string;
+    status: "unknown" | "active" | "on-hold" | "cancelled" | "completed" | "entered-in-error" | "stopped" | "draft";
     authoredOn: string;
     sig: string;
     indication: string;
@@ -20,8 +20,8 @@ export interface ParsedMedication {
 export interface ParsedAllergy {
     id: string;
     code: string;
-    criticality: string;
-    reaction: string;
+    criticality: 'high' | 'low' | 'unable-to-assess' | 'unknown';
+    reaction: string; 
     recordedDate: string;
 }
 
@@ -31,8 +31,10 @@ export interface ParsedObservation {
     text: string;
     value: number | null;
     unit: string;
-    referenceRange: string;
+    referenceRangeLow: number | null;
+    referenceRangeHigh: number | null;
     effectiveDateTime: string;
+    interpretation: "High" | "Low" | "WNL" | "Unknown";
 }
 
 export function parsePatient(patient: fhir4.Patient): ParsedPatient | null {
@@ -61,14 +63,32 @@ export function parsePatient(patient: fhir4.Patient): ParsedPatient | null {
 export function parseObservation(entry: fhir4.Observation): ParsedObservation | null {
     if (!entry || entry.resourceType !== 'Observation') return null;
 
+    const value = entry.valueQuantity?.value
+    const referenceRangeLow = entry.referenceRange?.[0]?.low?.value
+    const referenceRangeHigh = entry.referenceRange?.[0]?.high?.value
+
+    let interpretation: "High" | "Low" | "WNL" | "Unknown" = 'Unknown'
+ 
+    if (value === undefined || referenceRangeLow === undefined || referenceRangeHigh === undefined) {
+        interpretation = 'Unknown'
+    } else if (value > referenceRangeLow && value < referenceRangeHigh) {
+        interpretation = 'WNL'
+    } else if (value > referenceRangeHigh) {
+        interpretation = 'High'
+    } else {
+        interpretation = 'Low'
+    }
+
     return {
         id: entry.id ?? "",
         code: entry.code?.coding?.[0]?.code ?? "",
         text: entry.code?.text ?? "Unknown Observation",
-        value: entry.valueQuantity?.value ?? null,
+        value: value ?? null,
         unit: entry.valueQuantity?.unit ?? entry.valueQuantity?.code ?? "",
-        referenceRange: entry.referenceRange?.[0]?.text ?? `${entry.referenceRange?.[0]?.low?.value ?? ""} - ${entry.referenceRange?.[0]?.high?.value ?? ""}`,
+        referenceRangeLow: referenceRangeLow ?? null,
+        referenceRangeHigh: referenceRangeHigh ?? null,
         effectiveDateTime: entry.effectiveDateTime ?? "",
+        interpretation: interpretation
     }
 }
 
@@ -78,7 +98,7 @@ export function parseAllergy(entry: fhir4.AllergyIntolerance): ParsedAllergy | n
     return {
         id: entry.id ?? "",
         code: entry.code?.text ?? entry.code?.coding?.[0]?.display ?? "Unknown allergen",
-        criticality: entry.criticality ?? "Unknown",
+        criticality: entry.criticality ?? "unknown",
         reaction: entry.reaction?.[0]?.manifestation?.[0]?.text ?? "",
         recordedDate: entry.recordedDate ?? "",
     }

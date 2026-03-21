@@ -5,26 +5,40 @@ export interface AllergyListProps {
     allergies: ParsedAllergy[];
 }
 
+const criticalityConfig = {
+  high: { border: 'border-l-red-500', pill: 'text-red-200 bg-red-900/60' },
+  low:  { border: 'border-l-yellow-500', pill: 'text-yellow-800 bg-yellow-100' },
+  "unable-to-assess":  { border: 'border-l-gray-500', pill: 'text-gray-800 bg-gray-100' },
+  unknown:  { border: 'border-l-gray-500', pill: 'text-gray-800 bg-gray-100' },
+} as const;
+
 export default function AllergyCard({ allergies }: AllergyListProps) {
+    
+
     return (
         <>
-            {/* <h1 className="text-base font-semibold text-white">Medications</h1> */}
-            {allergies.map((allergy) => (
-                <div className="mt-10 mb-5 w-200 overflow-hidden rounded-lg bg-gray-800/50 outline -outline-offset-1 outline-white/10" key={allergy.id}>
-                    <ul>
-                        <li className="px-3 py-2 text-sm font-medium whitespace-nowrap text-white">Name: {allergy.code}</li>
-                        <li className={`px-3 py-4 text-sm whitespace-nowrap ${allergy.criticality === 'high' 
-                                ? "text-red-400" 
-                                : allergy.criticality === 'low' 
-                                ? "text-yellow-400"
-                                : "text-gray-400"}`}>
-                                    Critiality: {allergy.criticality}
-                        </li>
-                        <li className="px-3 py-2 text-sm text-white">Reaction {allergy.reaction ? allergy.reaction : "None recorded"} </li>
-                        <li className="px-3 py-2 text-sm whitespace-nowrap text-white">Recorded Date: {formatDate(allergy.recordedDate)}</li>
-                    </ul>
+            <h1 className="pl-2 mb-2 text-base font-semibold text-gray-400">Allergies</h1>
+            {allergies.map((allergy) => {
+                const config = criticalityConfig[allergy.criticality] ?? criticalityConfig.unknown;
+
+                return (
+                <div 
+                    key={allergy.id}
+                    className={`p-4 mb-5 w-200 rounded-r-lg bg-gray-800/50 outline -outline-offset-1 outline-white/10 border-l-2 ${config.border}`}
+                >
+                    <div>
+                        <div className="flex justify-between items-center pr-4">
+                            <div className="px-3 py-2 text-lg font-semibold whitespace-nowrap text-white">{allergy.code}</div>
+                            <div className={`px-3 text-sm whitespace-nowrap rounded-full border border-white/10 ${config.pill}`}>
+                                        {allergy.criticality.charAt(0).toUpperCase() + allergy.criticality.slice(1)} criticality
+                            </div>
+                        </div>
+                        <div className="flex items-center pr-4">
+                            <div className="px-3 py-2 text-sm text-white">Reaction: {allergy.reaction ? allergy.reaction : "None recorded"} &middot; Recorded: {formatDate(allergy.recordedDate)}</div>
+                        </div>
+                    </div>
                 </div>
-            ))}
+            )})}
         </>
     )
 }
