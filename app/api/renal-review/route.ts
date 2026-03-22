@@ -71,8 +71,7 @@ const SYSTEM_PROMPT: Anthropic.TextBlockParam[] = [
     {
         type: "text",
         text: `You are a clinical pharmacist reviewing antibiotic regimens for renal dose adjustments. 
-                Use the available tools to gather patient data, then provide a specific dose adjustment recommendation. Be concise and clinical. 
-                Do not use markdown formatting. Write in plain prose only.`
+                Use the available tools to gather patient data, then provide a specific dose adjustment recommendation. Be concise and clinical. Return as markdown`
     },
     {
         type: "text",
@@ -103,7 +102,7 @@ export async function POST(request: Request) {
         }
 
         const response = await anthropic.messages.create({
-            model: "claude-sonnet-4-6",
+            model: "claude-haiku-4-5",
             max_tokens: 1024,
             system: SYSTEM_PROMPT,
             tools: tools,
@@ -114,12 +113,8 @@ export async function POST(request: Request) {
         messages.push({ role: "assistant", content: response.content });
 
         // If model is done, return the final text
-        if (response.stop_reason === "end_turn") {
-            const recommendation = response.content
-                .filter((block): block is Anthropic.TextBlock => block.type === "text")
-                .map(block => block.text)
-                .join("");
-            return NextResponse.json({ recommendation });
+        if (response.stop_reason === "end_turn") { 
+            break; // Exit the loop
         }
 
         // If model wants to use tools, execute them and return results
@@ -135,8 +130,21 @@ export async function POST(request: Request) {
             // Add tool results to conversation and loop again
             messages.push({ role: "user", content: toolResults})
         }
+
         console.log(JSON.stringify(messages, null, 2))
         console.log("Policy length (chars):", NEBRASKA_MEDICINE_RENAL_POLICY.length)
         console.log(response.usage)
+
+        messages.push({
+            role: "user",
+            content: "Based on the information gathered, provide your renal dosing recommendation in markdown format."
+        });
+
+        const stream = await anthropic.messages.stream({
+                model: "claude-haiku-4-5",
+                max_tokens: 1024,
+                messages: messages
+            })
+            return new Response(stream.toReadableStream());
     }
 };

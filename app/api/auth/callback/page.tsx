@@ -20,7 +20,7 @@ export default function CallbackPage() {
     const [conflicts, setConflicts] = useState<{drug: string, allergy: string}[]>([])
     const [renalPanel, setRenalPanel] = useState<ParsedObservation[]>([]);
     const [renallyDosedAbx, setRenallyDosedAbx] = useState<ParsedMedication[]>([]);
-    const [renalRecommendaiton, setRenalRecommendation] = useState<string>('')
+    const [renalRecommendation, setRenalRecommendation] = useState<string>('')
 
     useEffect(() => {
         if (isReadyCalled.current) return;
@@ -46,17 +46,25 @@ export default function CallbackPage() {
             setRenalPanel(mockLabs)
             setRenallyDosedAbx(mockDrugs)
 
-            // const res = await fetch('/api/renal-review', {
-            //     method: 'POST',
-            //     headers: { 'Content-Type': 'application/json' },
-            //     body: JSON.stringify({ 
-            //         patient: parsePatient(data.patient),
-            //         medications: mockDrugs,
-            //         observations: mockLabs,
-            //     }),
-            // });
-            // const { recommendation } = await res.json();
-            // setRenalRecommendation(recommendation)
+            const res = await fetch('/api/renal-review', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    patient: parsePatient(data.patient),
+                    medications: mockDrugs,
+                    observations: mockLabs,
+                }),
+            });
+            const reader = res.body?.getReader();
+            const decoder = new TextDecoder();
+
+            if (!reader) return
+
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+                setRenalRecommendation(prev => prev + decoder.decode(value));
+            }
 
             console.log(data)
             // const patientId = "87a339d0-8cae-418e-89c7-8651e6aab3c6";
@@ -89,7 +97,7 @@ export default function CallbackPage() {
             <MedicationCard medications={patientData.medications}/>
             <AllergyCard allergies={patientData.allergies} />
             <LabCard observations={patientData.observations} />
-            <RenalDosingPanel drugs={renallyDosedAbx} observations={renalPanel} recommendation={renalRecommendaiton} />
+            <RenalDosingPanel drugs={renallyDosedAbx} observations={renalPanel} recommendation={renalRecommendation} />
         </>
     )
 }
