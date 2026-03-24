@@ -44,7 +44,8 @@ export default function ObservationList({ observations }: ObservationListProps) 
                             </td>
                             <td className="px-3 py-4 text-sm whitespace-nowrap text-gray-400">{lab.value}</td>
                             <td className="px-3 py-4 text-sm text-gray-400">{lab.unit}</td>
-                            <td className="px-3 py-4 text-sm whitespace-nowrap text-gray-400">{lab.referenceRange}</td>
+                            <td className="px-3 py-4 text-sm whitespace-nowrap text-gray-400">{lab.referenceRangeLow}</td>
+                            <td className="px-3 py-4 text-sm whitespace-nowrap text-gray-400">{lab.referenceRangeHigh}</td>
                             <td className="px-3 py-4 text-sm whitespace-nowrap text-gray-400">{formatDate(lab.effectiveDateTime)}</td>
                         </tr>
                         ))}
