@@ -17,7 +17,7 @@ const statusConfig = {
 
 export default function MedicationCard({ medications }: MedicationListProps) {
     return (
-        <>
+        <div>
         <h1 className="pl-2 mb-2 text-base font-semibold text-gray-400">Medications</h1>
                 {/* Content goes here */}
                 {medications.map((medication) => {
@@ -47,6 +47,6 @@ export default function MedicationCard({ medications }: MedicationListProps) {
                     </div>
                     )
                 })}
-        </>
+        </div>
     )
 }

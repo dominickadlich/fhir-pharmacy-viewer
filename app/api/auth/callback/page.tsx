@@ -20,7 +20,7 @@ export default function CallbackPage() {
     const [conflicts, setConflicts] = useState<{drug: string, allergy: string}[]>([])
     const [renalPanel, setRenalPanel] = useState<ParsedObservation[]>([]);
     const [renallyDosedAbx, setRenallyDosedAbx] = useState<ParsedMedication[]>([]);
-    const [renalRecommendation, setRenalRecommendation] = useState<string>('')
+    const [renalRecommendaiton, setRenalRecommendation] = useState<string>('')
 
     useEffect(() => {
         if (isReadyCalled.current) return;
@@ -55,15 +55,17 @@ export default function CallbackPage() {
                     observations: mockLabs,
                 }),
             });
-            const reader = res.body?.getReader();
-            const decoder = new TextDecoder();
+            if (!res.body) return; // Ensure body is not null
 
-            if (!reader) return
+            const reader = res.body.getReader(); // Per MDN, creates a reader and locks the stream to it. What's a reader?
+            const decoder = new TextDecoder(); // A decoder takes an array of bytes as input and returns a JavaScript string
 
             while (true) {
-                const { done, value } = await reader.read();
-                if (done) break;
-                setRenalRecommendation(prev => prev + decoder.decode(value));
+                const { done, value } = await reader.read(); // Result objects contain two properties: done - true if stream has give all data and value - some data. Always undefined when done is true
+                if (done) break; // If done break the loop
+                const chunk = decoder.decode(value); // Instantiate chunk to equal the decoded value
+                console.log(chunk)
+                setRenalRecommendation(r => r + chunk) // Updating the same state multiple times before the next render for streaming
             }
 
             console.log(data)
@@ -94,10 +96,12 @@ export default function CallbackPage() {
             {conflicts.map((c, i) => (
                 <DrugAllergyFlag key={i} drug={c.drug} allergy={c.allergy} />
             ))}
-            <MedicationCard medications={patientData.medications}/>
+            <div className="grid grid-cols-2 border">
+                <MedicationCard medications={patientData.medications}/>
+                <RenalDosingPanel drugs={renallyDosedAbx} observations={renalPanel} recommendation={renalRecommendaiton} />
+            </div>
             <AllergyCard allergies={patientData.allergies} />
             <LabCard observations={patientData.observations} />
-            <RenalDosingPanel drugs={renallyDosedAbx} observations={renalPanel} recommendation={renalRecommendation} />
         </>
     )
 }

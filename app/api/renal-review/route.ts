@@ -71,7 +71,9 @@ const SYSTEM_PROMPT: Anthropic.TextBlockParam[] = [
     {
         type: "text",
         text: `You are a clinical pharmacist reviewing antibiotic regimens for renal dose adjustments. 
-                Use the available tools to gather patient data, then provide a specific dose adjustment recommendation. Be concise and clinical. Return as markdown`
+        Use the available tools to gather patient data, then provide a specific dose adjustment 
+        recommendation based on the patient's CrCl. Base all recommendations strictly on the 
+        institutional renal dosing policy provided. Be concise and clinical. Return as markdown.`
     },
     {
         type: "text",
@@ -102,7 +104,7 @@ export async function POST(request: Request) {
         }
 
         const response = await anthropic.messages.create({
-            model: "claude-haiku-4-5",
+            model: "claude-sonnet-4-6",
             max_tokens: 1024,
             system: SYSTEM_PROMPT,
             tools: tools,
@@ -135,16 +137,26 @@ export async function POST(request: Request) {
         console.log("Policy length (chars):", NEBRASKA_MEDICINE_RENAL_POLICY.length)
         console.log(response.usage)
 
-        messages.push({
-            role: "user",
-            content: "Based on the information gathered, provide your renal dosing recommendation in markdown format."
-        });
-
-        const stream = await anthropic.messages.stream({
-                model: "claude-haiku-4-5",
-                max_tokens: 1024,
-                messages: messages
-            })
-            return new Response(stream.toReadableStream());
     }
+    messages.push({
+        role: "user",
+        content: "Based on the information gathered, provide your renal dosing recommendation in markdown format."
+    });
+
+    const stream = anthropic.messages.stream({
+        model: "claude-sonnet-4-6",
+        max_tokens: 1024,
+        messages: messages
+    })
+    const readable = new ReadableStream({
+        async start(controller) {
+            stream.on("text", (text) => {
+                controller.enqueue(new TextEncoder().encode(text));
+            });
+            await stream.finalMessage();
+            controller.close();
+        }
+    });
+
+    return new Response(readable);
 };

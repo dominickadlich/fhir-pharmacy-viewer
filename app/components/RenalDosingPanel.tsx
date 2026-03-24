@@ -1,4 +1,6 @@
 import { ParsedMedication, ParsedObservation } from "../lib/fhir/parsers";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from 'remark-gfm'
 
 export default function RenalDosingPanel({
     drugs,
@@ -27,10 +29,8 @@ export default function RenalDosingPanel({
             ))}
         </div>
     </div>
-        <div className="px-4 py-5 sm:p-6">
-            <p className="text-sm text-white">
-                {recommendation}
-            </p>
+        <div className="px-4 py-5 sm:p-6 text-sm text-white">
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>{recommendation}</ReactMarkdown>
         </div>
     </div>
   )
