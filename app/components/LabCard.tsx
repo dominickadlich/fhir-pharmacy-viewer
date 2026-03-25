@@ -14,10 +14,10 @@ const statusConfig = {
 
 export default function LabCard({ observations }: ObservationListProps) {
     return (
-        <>
+        <div>
             <h1 className="pl-2 mb-2 text-base font-semibold text-gray-400">Labs</h1>
-                    {/* Content goes here */}
-            <div className="grid grid-cols-5">
+
+            <div className="grid grid-cols-3">
                 {observations.map((lab) => {
                 const config = statusConfig[lab.interpretation] ?? statusConfig.Unknown
 
@@ -40,6 +40,6 @@ export default function LabCard({ observations }: ObservationListProps) {
                 </div>
                     )})}
             </div>
-        </>
+        </div>
     )
 }

@@ -86,6 +86,9 @@ export default function CallbackPage() {
 
     if (!patientData) return <div>Loading...</div>
 
+    const allDrugs = patientData.medications.concat(renallyDosedAbx)
+    const allLabs = patientData.observations.concat(renalPanel)
+
     return (
         <>
             <PatientHeader
@@ -96,12 +99,12 @@ export default function CallbackPage() {
             {conflicts.map((c, i) => (
                 <DrugAllergyFlag key={i} drug={c.drug} allergy={c.allergy} />
             ))}
-            <div className="grid grid-cols-2 border">
-                <MedicationCard medications={patientData.medications}/>
-                <RenalDosingPanel drugs={renallyDosedAbx} observations={renalPanel} recommendation={renalRecommendaiton} />
+            <div className="mt-10 grid grid-cols-2">
+                <MedicationCard medications={allDrugs} />
+                <LabCard observations={allLabs} />
             </div>
             <AllergyCard allergies={patientData.allergies} />
-            <LabCard observations={patientData.observations} />
+                <RenalDosingPanel drugs={renallyDosedAbx} observations={renalPanel} recommendation={renalRecommendaiton} />
         </>
     )
 }
