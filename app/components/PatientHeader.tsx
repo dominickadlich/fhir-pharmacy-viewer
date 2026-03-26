@@ -32,7 +32,7 @@ export default function PatientHeader({ patient, allergyCount, medicationCount }
     const age = patient.dob ? calculateAge(patient.dob) : null;
 
     return (
-        <div className="grid justify-items-center w-full text-white">
+        <div className="grid justify-items-center w-full text-white pb-5">
 
             {/* Cover banner */}
             {/* <div className="h-28 w-full bg-gradient-to-r from-cyan-600 via-blue-600 to-indigo-700 relative">
@@ -47,7 +47,7 @@ export default function PatientHeader({ patient, allergyCount, medicationCount }
 
                     {/* Avatar */}
                     <div className="grid justify-items-center p-2">
-                        <div className="w-20 h-20 rounded-full bg-gradient-to-br from-violet-400 to-indigo-600 flex items-center justify-center text-2xl font-bold text-white ring-4 ring-slate-900 shadow-xl select-none">
+                        <div className="w-20 h-20 rounded-full bg-violet-600 flex items-center justify-center text-2xl font-bold text-white ring-4 ring-slate-900 shadow-xl select-none">
                             {patient.initials}
                         </div>
                         <span className="absolute bottom-1 right-1 w-3.5 h-3.5 bg-emerald-400 rounded-full ring-2 ring-slate-900" title="Active patient" />

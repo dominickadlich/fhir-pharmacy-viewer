@@ -13,7 +13,9 @@ export default function RenalDosingPanel({
 }) {
   return (
         <div>
-            <h1 className="pl-2 mb-2 text-base font-semibold text-gray-400">Renal Recommendation</h1>
+            <div>
+                <h1 className="pl-2 mb-2 text-base font-semibold text-gray-400">Renal Recommendation</h1>
+            </div>
             <div className="divide-y divide-white/10 overflow-hidden rounded-lg bg-gray-800/50 outline -outline-offset-1 outline-white/10">
                     <div className="px-4 py-5 sm:p-6 text-sm text-white prose prose-invert max-h-112 overflow-y-auto">
                     <ReactMarkdown remarkPlugins={[remarkGfm]}>{recommendation}</ReactMarkdown>

@@ -18,6 +18,7 @@ export default function AllergyCard({ allergies }: AllergyListProps) {
     return (
         <>
             <h1 className="pl-2 mb-2 text-base font-semibold text-gray-400">Allergies</h1>
+            <div className="grid grid-cols-2 justify-items-center">
             {allergies.map((allergy) => {
                 const config = criticalityConfig[allergy.criticality] ?? criticalityConfig.unknown;
 
@@ -39,6 +40,7 @@ export default function AllergyCard({ allergies }: AllergyListProps) {
                     </div>
                 </div>
             )})}
+            </div>
         </>
     )
 }

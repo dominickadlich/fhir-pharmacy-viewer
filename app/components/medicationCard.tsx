@@ -17,8 +17,9 @@ const statusConfig = {
 
 export default function MedicationCard({ medications }: MedicationListProps) {
     return (
-        <div>
+        <>
         <h1 className="pl-2 mb-2 text-base font-semibold text-gray-400">Medications</h1>
+        <div className="grid grid-cols-2 justify-items-center">
                 {/* Content goes here */}
                 {medications.map((medication) => {
                     const config = statusConfig[medication.status] ?? statusConfig.unknown;
@@ -48,5 +49,6 @@ export default function MedicationCard({ medications }: MedicationListProps) {
                     )
                 })}
         </div>
+        </>
     )
 }
